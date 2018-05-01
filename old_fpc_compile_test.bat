@@ -20,7 +20,7 @@ IF /I "%is_inner%" EQU "0" (
   SET log_file=%bat_dir%old_fpc_log.txt
 
   REM obtain auxiliary paths (path to compiler in fpc_path, path to libraries in libs_path)
-  CALL ..\..\..\Scripts\get_global_paths.bat
+  CALL ..\..\..\TestingScripts\get_global_paths.bat
 
   REM if the output directory exists, delete it
   IF EXIST "!out_dir!" (
