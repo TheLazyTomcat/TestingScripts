@@ -56,7 +56,9 @@ FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
    
   ECHO;
   ECHO; >>%log_file%
+)
   
+FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (  
   %cmd_line_x64_O1% "%%f"
   %cmd_line_x64_O1% "%%f" >>%log_file%
    
