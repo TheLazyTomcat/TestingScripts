@@ -35,10 +35,10 @@ IF /I "%is_inner%" EQU "0" (
 )
 
 REM build full command lines for compilation
-SET cmd_line_x86_O1=%fpc_path% -Twin32 -Pi386 -O1 -vewnhq -dBARE_FPC -FU%out_dir% -Fu%libs_path%
-SET cmd_line_x86_O3=%fpc_path% -Twin32 -Pi386 -O3 -vewnhq -dBARE_FPC -FU%out_dir% -Fu%libs_path%
-SET cmd_line_x64_O1=%fpc_path% -Twin64 -Px86_64 -O1 -vewnhq -dBARE_FPC -FU%out_dir% -Fu%libs_path%
-SET cmd_line_x64_O3=%fpc_path% -Twin64 -Px86_64 -O3 -vewnhq -dBARE_FPC -FU%out_dir% -Fu%libs_path%
+SET cmd_line_x86_O1="%fpc_path%" -Twin32 -Pi386 -O1 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%"
+SET cmd_line_x86_O3="%fpc_path%" -Twin32 -Pi386 -O3 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%"
+SET cmd_line_x64_O1="%fpc_path%" -Twin64 -Px86_64 -O1 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%"
+SET cmd_line_x64_O3="%fpc_path%" -Twin64 -Px86_64 -O3 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%"
 
 REM traverse all *.pas files and compile them
 REM every file is compiled twice - first for output into console, 
