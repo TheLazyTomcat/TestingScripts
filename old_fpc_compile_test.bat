@@ -40,6 +40,11 @@ SET cmd_line_x86_O3="%old_fpc_path%" -Twin32 -Pi386 -O3 -vewnhq -dBARE_FPC -FU"%
 SET cmd_line_x64_O1="%old_fpc_path%" -Twin64 -Px86_64 -O1 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%"
 SET cmd_line_x64_O3="%old_fpc_path%" -Twin64 -Px86_64 -O3 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%"
 
+SET cmd_line_x86_O1_PP="%old_fpc_path%" -Twin32 -Pi386 -O1 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%" -dPurePascal
+SET cmd_line_x86_O3_PP="%old_fpc_path%" -Twin32 -Pi386 -O3 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%" -dPurePascal
+SET cmd_line_x64_O1_PP="%old_fpc_path%" -Twin64 -Px86_64 -O1 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%" -dPurePascal
+SET cmd_line_x64_O3_PP="%old_fpc_path%" -Twin64 -Px86_64 -O3 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%" -dPurePascal
+
 REM traverse all *.pas files and compile them
 REM every file is compiled twice - first for output into console,
 REM second-time the output is redirected into a log file
@@ -51,8 +56,20 @@ FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
   ECHO;
   ECHO; >>"%log_file%"
 
+  %cmd_line_x86_O1_PP% "%%f"
+  %cmd_line_x86_O1_PP% "%%f" >>"%log_file%"
+
+  ECHO;
+  ECHO; >>"%log_file%"
+
   %cmd_line_x86_O3% "%%f"
   %cmd_line_x86_O3% "%%f" >>"%log_file%"
+
+  ECHO;
+  ECHO; >>"%log_file%"
+
+  %cmd_line_x86_O3_PP% "%%f"
+  %cmd_line_x86_O3_PP% "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"
@@ -65,8 +82,20 @@ FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
   ECHO;
   ECHO; >>"%log_file%"
 
+  %cmd_line_x64_O1_PP% "%%f"
+  %cmd_line_x64_O1_PP% "%%f" >>"%log_file%"
+
+  ECHO;
+  ECHO; >>"%log_file%"
+
   %cmd_line_x64_O3% "%%f"
   %cmd_line_x64_O3% "%%f" >>"%log_file%"
+
+  ECHO;
+  ECHO; >>"%log_file%"
+
+  %cmd_line_x64_O3_PP% "%%f"
+  %cmd_line_x64_O3_PP% "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"

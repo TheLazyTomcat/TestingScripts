@@ -36,6 +36,7 @@ IF /I "%is_inner%" EQU "0" (
 
 REM build full command line for compilation
 SET cmd_line=dcc32 -Q -B -N"%out_dir%"
+SET cmd_line_pp=dcc32 -Q -B -N"%out_dir%" -DPurePascal
 
 REM traverse all *.pas files and compile them
 REM every file is compiled twice - first for output into console,
@@ -48,6 +49,12 @@ FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
   %cmd_line% -U"%%~pdf.";"%bat_dir%..\Dev";"%out_dir%";"%libs_path%" "%%f" >>"%log_file%"
 
   REM empty line after each compilation
+  ECHO;
+  ECHO; >>"%log_file%"
+  
+  %cmd_line_pp% -U"%%~pdf.";"%bat_dir%..\Dev";"%out_dir%";"%libs_path%" "%%f"
+  %cmd_line_pp% -U"%%~pdf.";"%bat_dir%..\Dev";"%out_dir%";"%libs_path%" "%%f" >>"%log_file%"
+    
   ECHO;
   ECHO; >>"%log_file%"
 )
