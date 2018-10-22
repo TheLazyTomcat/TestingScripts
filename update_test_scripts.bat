@@ -1,8 +1,8 @@
 @ECHO OFF
 
-REM directory path where this script resides 
+REM directory path where this script resides
 SET this_path=%~dp0
-  
+
 REM search for CompileTests folder and copy the test file there
 FOR /R ".." %%f IN (.) DO (
   IF /I "%%~nxf"=="CompileTests" (
@@ -14,5 +14,5 @@ FOR /R ".." %%f IN (.) DO (
   IF /I "%%~nxf"=="PrgCompileTests" (
     ECHO copying scripts to project: %%~dpf
     COPY /Y "%this_path%""project_compile_test.bat" "%%~dpf""PrgCompileTests\project_compile_test.bat" >NUL
-  )  
+  )
 )

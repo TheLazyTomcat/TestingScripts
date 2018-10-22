@@ -11,12 +11,12 @@ SET log_file=%this_path%old_fpc_log.txt
 
 IF EXIST "%out_dir%" (
   RD "%out_dir%" /s /q)
-  
+
 MKDIR "%out_dir%"
 
 IF EXIST "%log_file%" (
   DEL "%log_file%")
-  
+
 FOR /R ".." %%f IN ("*.bat") DO (
   IF /I "%%~nxf"=="old_fpc_compile_test.bat" (
     IF /I NOT "%%~dpf"=="%master_path%" (

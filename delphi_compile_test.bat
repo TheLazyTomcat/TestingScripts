@@ -15,7 +15,7 @@ REM do following only when not called from global check script
 IF /I "%is_inner%" EQU "0" (
   REM get directory where to store compiled binaries
   SET out_dir=%bat_dir%delphi_out
-  
+
   REM prepare log file name
   SET log_file=%bat_dir%delphi_log.txt
 
@@ -38,7 +38,7 @@ REM build full command line for compilation
 SET cmd_line=dcc32 -Q -B -N"%out_dir%"
 
 REM traverse all *.pas files and compile them
-REM every file is compiled twice - first for output into console, 
+REM every file is compiled twice - first for output into console,
 REM second-time the output is redirected into a log file
 FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
   ECHO %%f
@@ -46,7 +46,7 @@ FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
 
   %cmd_line% -U"%%~pdf.";"%bat_dir%..\Dev";"%out_dir%";"%libs_path%" "%%f"
   %cmd_line% -U"%%~pdf.";"%bat_dir%..\Dev";"%out_dir%";"%libs_path%" "%%f" >>"%log_file%"
-   
+
   REM empty line after each compilation
   ECHO;
   ECHO; >>"%log_file%"

@@ -15,7 +15,7 @@ REM do following only when not called from global check script
 IF /I "%is_inner%" EQU "0" (
   REM get directory where to store compiled binaries
   SET out_dir=%bat_dir%old_fpc_out
-  
+
   REM prepare log file name
   SET log_file=%bat_dir%old_fpc_log.txt
 
@@ -41,35 +41,35 @@ SET cmd_line_x64_O1="%old_fpc_path%" -Twin64 -Px86_64 -O1 -vewnhq -dBARE_FPC -FU
 SET cmd_line_x64_O3="%old_fpc_path%" -Twin64 -Px86_64 -O3 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%"
 
 REM traverse all *.pas files and compile them
-REM every file is compiled twice - first for output into console, 
+REM every file is compiled twice - first for output into console,
 REM second-time the output is redirected into a log file
 FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
   %cmd_line_x86_O1% "%%f"
   %cmd_line_x86_O1% "%%f" >>"%log_file%"
-   
+
   REM empty line after each compilation
   ECHO;
   ECHO; >>"%log_file%"
-  
+
   %cmd_line_x86_O3% "%%f"
   %cmd_line_x86_O3% "%%f" >>"%log_file%"
-   
+
   ECHO;
   ECHO; >>"%log_file%"
 )
-  
-FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (  
+
+FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
   %cmd_line_x64_O1% "%%f"
   %cmd_line_x64_O1% "%%f" >>"%log_file%"
-   
+
   ECHO;
   ECHO; >>"%log_file%"
-  
-  %cmd_line_x64_O1% "%%f"
-  %cmd_line_x64_O1% "%%f" >>"%log_file%"
-   
+
+  %cmd_line_x64_O3% "%%f"
+  %cmd_line_x64_O3% "%%f" >>"%log_file%"
+
   ECHO;
-  ECHO; >>"%log_file%"   
+  ECHO; >>"%log_file%"
 )
 
 REM do following only when not called from global check script
