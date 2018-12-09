@@ -35,67 +35,59 @@ IF /I "%is_inner%" EQU "0" (
 )
 
 REM build full command line for compilation
-SET cmd_line_x86_O1="%old_fpc_path%" -Twin32 -Pi386 -O1 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%"
-SET cmd_line_x86_O3="%old_fpc_path%" -Twin32 -Pi386 -O3 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%"
-SET cmd_line_x64_O1="%old_fpc_path%" -Twin64 -Px86_64 -O1 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%"
-SET cmd_line_x64_O3="%old_fpc_path%" -Twin64 -Px86_64 -O3 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%"
-
-SET cmd_line_x86_O1_PP="%old_fpc_path%" -Twin32 -Pi386 -O1 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%" -dPurePascal
-SET cmd_line_x86_O3_PP="%old_fpc_path%" -Twin32 -Pi386 -O3 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%" -dPurePascal
-SET cmd_line_x64_O1_PP="%old_fpc_path%" -Twin64 -Px86_64 -O1 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%" -dPurePascal
-SET cmd_line_x64_O3_PP="%old_fpc_path%" -Twin64 -Px86_64 -O3 -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%" -dPurePascal
+SET cmd_line="%old_fpc_path%" -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%"
 
 REM traverse all *.pas files and compile them
 REM every file is compiled twice - first for output into console,
 REM second-time the output is redirected into a log file
 FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
-  %cmd_line_x86_O1% "%%f"
-  %cmd_line_x86_O1% "%%f" >>"%log_file%"
+  %cmd_line% -Twin32 -Pi386 -O1 "%%f"
+  %cmd_line% -Twin32 -Pi386 -O1 "%%f" >>"%log_file%"
 
   REM empty line after each compilation
   ECHO;
   ECHO; >>"%log_file%"
 
-  %cmd_line_x86_O1_PP% "%%f"
-  %cmd_line_x86_O1_PP% "%%f" >>"%log_file%"
+  %cmd_line% -Twin32 -Pi386 -O1 -dPurePascal "%%f"
+  %cmd_line% -Twin32 -Pi386 -O1 -dPurePascal "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"
 
-  %cmd_line_x86_O3% "%%f"
-  %cmd_line_x86_O3% "%%f" >>"%log_file%"
+  %cmd_line% -Twin32 -Pi386 -O3 "%%f"
+  %cmd_line% -Twin32 -Pi386 -O3 "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"
 
-  %cmd_line_x86_O3_PP% "%%f"
-  %cmd_line_x86_O3_PP% "%%f" >>"%log_file%"
+  %cmd_line% -Twin32 -Pi386 -O3 -dPurePascal "%%f"
+  %cmd_line% -Twin32 -Pi386 -O3 -dPurePascal "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"
 )
 
 FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
-  %cmd_line_x64_O1% "%%f"
-  %cmd_line_x64_O1% "%%f" >>"%log_file%"
+  %cmd_line% -Twin64 -Px86_64 -O1 "%%f"
+  %cmd_line% -Twin64 -Px86_64 -O1 "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"
 
-  %cmd_line_x64_O1_PP% "%%f"
-  %cmd_line_x64_O1_PP% "%%f" >>"%log_file%"
+  %cmd_line% -Twin64 -Px86_64 -O1 -dPurePascal "%%f"
+  %cmd_line% -Twin64 -Px86_64 -O1 -dPurePascal "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"
 
-  %cmd_line_x64_O3% "%%f"
-  %cmd_line_x64_O3% "%%f" >>"%log_file%"
+  %cmd_line% -Twin64 -Px86_64 -O3 "%%f"
+  %cmd_line% -Twin64 -Px86_64 -O3 "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"
 
-  %cmd_line_x64_O3_PP% "%%f"
-  %cmd_line_x64_O3_PP% "%%f" >>"%log_file%"
+  %cmd_line% -Twin64 -Px86_64 -O3 -dPurePascal "%%f"
+  %cmd_line% -Twin64 -Px86_64 -O3 -dPurePascal "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"
