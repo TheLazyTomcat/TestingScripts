@@ -35,7 +35,7 @@ IF /I "%is_inner%" EQU "0" (
 )
 
 REM build full command line for compilation
-SET cmd_line=dcc32 -Q -B -N"%out_dir%" -U"%%~pdf.";"%bat_dir%..\Dev";"%out_dir%";"%libs_path%"
+SET cmd_line=dcc32 -Q -B -N"%out_dir%" -U"%%~pdf.";"%bat_dir%..\Dev";"%out_dir%";"%libs_path%" -I"%bat_dir%..\Dev";"%libs_path%"
 
 REM traverse all *.pas files and compile them
 REM every file is compiled twice - first for output into console,
