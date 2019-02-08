@@ -41,26 +41,34 @@ REM traverse all *.pas files and compile them
 REM every file is compiled twice - first for output into console,
 REM second-time the output is redirected into a log file
 FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
+  ECHO FPC - win32 i386 O1
   %cmd_line% -Twin32 -Pi386 -O1 "%%f"
+  ECHO FPC - win32 i386 O1 >>"%log_file%"
   %cmd_line% -Twin32 -Pi386 -O1 "%%f" >>"%log_file%"
 
   REM empty line after each compilation
   ECHO;
   ECHO; >>"%log_file%"
 
+  ECHO FPC - win32 i386 O1 PurePascal
   %cmd_line% -Twin32 -Pi386 -O1 -dPurePascal "%%f"
+  ECHO FPC - win32 i386 O1 PurePascal >>"%log_file%"
   %cmd_line% -Twin32 -Pi386 -O1 -dPurePascal "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"
 
+  ECHO FPC - win32 i386 O3
   %cmd_line% -Twin32 -Pi386 -O3 "%%f"
+  ECHO FPC - win32 i386 O3 >>"%log_file%"
   %cmd_line% -Twin32 -Pi386 -O3 "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"
 
+  ECHO FPC - win32 i386 O3 PurePascal
   %cmd_line% -Twin32 -Pi386 -O3 -dPurePascal "%%f"
+  ECHO FPC - win32 i386 O3 PurePascal >>"%log_file%"
   %cmd_line% -Twin32 -Pi386 -O3 -dPurePascal "%%f" >>"%log_file%"
 
   ECHO;
@@ -68,25 +76,33 @@ FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
 )
 
 FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
+  ECHO FPC - win64 x86_64 O1
   %cmd_line% -Twin64 -Px86_64 -O1 "%%f"
+  ECHO FPC - win64 x86_64 O1 >>"%log_file%"
   %cmd_line% -Twin64 -Px86_64 -O1 "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"
 
+  ECHO FPC - win64 x86_64 O1 PurePascal
   %cmd_line% -Twin64 -Px86_64 -O1 -dPurePascal "%%f"
+  ECHO FPC - win64 x86_64 O1 PurePascal >>"%log_file%"
   %cmd_line% -Twin64 -Px86_64 -O1 -dPurePascal "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"
 
+  ECHO FPC - win64 x86_64 O3
   %cmd_line% -Twin64 -Px86_64 -O3 "%%f"
+  ECHO FPC - win64 x86_64 O3 >>"%log_file%"
   %cmd_line% -Twin64 -Px86_64 -O3 "%%f" >>"%log_file%"
 
   ECHO;
   ECHO; >>"%log_file%"
 
+  ECHO FPC - win64 x86_64 O3 PurePascal
   %cmd_line% -Twin64 -Px86_64 -O3 -dPurePascal "%%f"
+  ECHO FPC - win64 x86_64 O3 PurePascal >>"%log_file%"
   %cmd_line% -Twin64 -Px86_64 -O3 -dPurePascal "%%f" >>"%log_file%"
 
   ECHO;

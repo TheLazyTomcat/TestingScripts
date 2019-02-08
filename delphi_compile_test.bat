@@ -44,14 +44,18 @@ FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
   ECHO %%f
   ECHO %%f >>"%log_file%"
 
+  ECHO Delphi
   %cmd_line% "%%f"
+  ECHO Delphi >>"%log_file%"
   %cmd_line% "%%f" >>"%log_file%"
 
   REM empty line after each compilation
   ECHO;
   ECHO; >>"%log_file%"
   
+  ECHO Delphi - PurePascal
   %cmd_line% -DPurePascal "%%f"
+  ECHO Delphi - PurePascal >>"%log_file%"
   %cmd_line% -DPurePascal "%%f" >>"%log_file%"  
     
   ECHO;
