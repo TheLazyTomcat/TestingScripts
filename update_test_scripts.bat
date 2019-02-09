@@ -8,6 +8,7 @@ FOR /R ".." %%f IN (.) DO (
   IF /I "%%~nxf"=="CompileTests" (  
     ECHO copying scripts to project: %%~dpf
     COPY /Y "%this_path%""out_split.bat" "%%~dpf""CompileTests\out_split.bat" >NUL
+    COPY /Y "%this_path%""get_global_paths.bat" "%%~dpf""CompileTests\get_global_paths.bat" >NUL
     COPY /Y "%this_path%""compile_test_fpc.bat" "%%~dpf""CompileTests\compile_test_fpc.bat" >NUL
     COPY /Y "%this_path%""compile_test_old_fpc.bat" "%%~dpf""CompileTests\compile_test_old_fpc.bat" >NUL
     COPY /Y "%this_path%""compile_test_delphi.bat" "%%~dpf""CompileTests\compile_test_delphi.bat" >NUL
@@ -15,6 +16,7 @@ FOR /R ".." %%f IN (.) DO (
   IF /I "%%~nxf"=="PrgCompileTests" (    
     ECHO copying scripts to project: %%~dpf
     COPY /Y "%this_path%""out_split.bat" "%%~dpf""PrgCompileTests\out_split.bat" >NUL
+    COPY /Y "%this_path%""get_global_paths.bat" "%%~dpf""PrgCompileTests\get_global_paths.bat" >NUL
     COPY /Y "%this_path%""project_compile_test.bat" "%%~dpf""PrgCompileTests\project_compile_test.bat" >NUL
   )
 )
