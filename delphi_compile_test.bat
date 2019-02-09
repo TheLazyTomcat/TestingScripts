@@ -41,25 +41,22 @@ REM traverse all *.pas files and compile them
 REM every file is compiled twice - first for output into console,
 REM second-time the output is redirected into a log file
 FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
-  ECHO %%f
-  ECHO %%f >>"%log_file%"
+  ECHO %%f | out_split.bat "%log_file%"
 
-  ECHO Delphi
-  %cmd_line% "%%f"
-  ECHO Delphi >>"%log_file%"
-  %cmd_line% "%%f" >>"%log_file%"
-
-  REM empty line after each compilation
-  ECHO;
-  ECHO; >>"%log_file%"
+  ECHO Delphi | out_split.bat "%log_file%"
+  %cmd_line% "%%f" | out_split.bat "%log_file%"
   
-  ECHO Delphi - PurePascal
-  %cmd_line% -DPurePascal "%%f"
-  ECHO Delphi - PurePascal >>"%log_file%"
-  %cmd_line% -DPurePascal "%%f" >>"%log_file%"  
+  REM empty line after each compilation
+  ECHO; | out_split.bat "%log_file%"
+)
+
+FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
+  ECHO %%f | out_split.bat "%log_file%"
+  
+  ECHO Delphi - PurePascal | out_split.bat "%log_file%"
+  %cmd_line% -DPurePascal "%%f" | out_split.bat "%log_file%"
     
-  ECHO;
-  ECHO; >>"%log_file%"
+  ECHO; | out_split.bat "%log_file%"
 )
 
 REM do following only when not called from global check script

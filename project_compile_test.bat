@@ -27,24 +27,24 @@ FOR /R "..\Dev" %%f IN ("*.dpr","*.lpi") DO (
 
   REM Delphi builds
   IF /I "%%~xf"==".dpr" (
-    ECHO %%f
+    ECHO %%f | out_split.bat "%log_file%"
     CD "%%~dpf"
 
-    %delphi_cmd% "%%f" >>"%log_file%"
-    ECHO; >>"%log_file%"
+    %delphi_cmd% "%%f" | out_split.bat "%log_file%"
+    ECHO; | out_split.bat "%log_file%"
   )
 
   REM Lazarus builds
   IF /I "%%~xf"==".lpi" (
-    ECHO %%f
+    ECHO %%f | out_split.bat "%log_file%"
     CD "%%~dpf"
 
     REM iterate modes
     FOR %%m in (%build_modes%) DO (
-      "%old_lazb_path%" %old_lazarus_cmd%%%m "%%f" >>"%log_file%"
-      ECHO; >>"%log_file%"
-      "%lazb_path%" %lazarus_cmd%%%m "%%f" >>"%log_file%"
-      ECHO; >>"%log_file%"
+      "%old_lazb_path%" %old_lazarus_cmd%%%m "%%f" | out_split.bat "%log_file%"
+      ECHO; | out_split.bat "%log_file%"
+      "%lazb_path%" %lazarus_cmd%%%m "%%f" | out_split.bat "%log_file%"
+      ECHO; | out_split.bat "%log_file%"
     )
   )
 )
