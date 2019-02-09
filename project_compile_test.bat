@@ -1,6 +1,13 @@
 @ECHO OFF
 SETLOCAL ENABLEDELAYEDEXPANSION ENABLEEXTENSIONS
 
+REM check is this script is called from a global check script or not
+IF DEFINED master_batch (
+  SET /A is_inner=1
+) ELSE (
+  SET /A is_inner=0
+)
+
 REM get directory path where this batch resides
 SET bat_dir=%~pd0
 
@@ -27,24 +34,30 @@ FOR /R "..\Dev" %%f IN ("*.dpr","*.lpi") DO (
 
   REM Delphi builds
   IF /I "%%~xf"==".dpr" (
-    ECHO %%f | out_split.bat "%log_file%"
+    ECHO %%f | "%bat_dir%"out_split.bat "%log_file%" 
     CD "%%~dpf"
 
-    %delphi_cmd% "%%f" | out_split.bat "%log_file%"
-    ECHO; | out_split.bat "%log_file%"
+    %delphi_cmd% "%%f" | "%bat_dir%"out_split.bat "%log_file%" 
+    ECHO; | "%bat_dir%"out_split.bat "%log_file%" 
   )
 
   REM Lazarus builds
   IF /I "%%~xf"==".lpi" (
-    ECHO %%f | out_split.bat "%log_file%"
+    ECHO %%f | "%bat_dir%"out_split.bat "%log_file%" 
     CD "%%~dpf"
 
     REM iterate modes
     FOR %%m in (%build_modes%) DO (
-      "%old_lazb_path%" %old_lazarus_cmd%%%m "%%f" | out_split.bat "%log_file%"
-      ECHO; | out_split.bat "%log_file%"
-      "%lazb_path%" %lazarus_cmd%%%m "%%f" | out_split.bat "%log_file%"
-      ECHO; | out_split.bat "%log_file%"
+      "%old_lazb_path%" %old_lazarus_cmd%%%m "%%f" | "%bat_dir%"out_split.bat "%log_file%" 
+      ECHO; | "%bat_dir%"out_split.bat "%log_file%" 
+      "%lazb_path%" %lazarus_cmd%%%m "%%f" | "%bat_dir%"out_split.bat "%log_file%" 
+      ECHO; | "%bat_dir%"out_split.bat "%log_file%" 
     )
   )
+)
+
+REM do following only when not called from global check script
+IF /I "%is_inner%" EQU "0" (
+  REM wait for user interaction
+  @PAUSE
 )

@@ -18,7 +18,7 @@ IF EXIST "%log_file%" (
   DEL "%log_file%")
 
 FOR /R ".." %%f IN ("*.bat") DO (
-  IF /I "%%~nxf"=="delphi_compile_test.bat" (
+  IF /I "%%~nxf"=="compile_test_delphi.bat" (
     IF /I NOT "%%~dpf"=="%master_path%" (
       CALL "%%f"
     )

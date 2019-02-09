@@ -43,7 +43,7 @@ REM second-time the output is redirected into a log file
 FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
   ECHO %%f | out_split.bat "%log_file%"
 
-  ECHO Delphi | out_split.bat "%log_file%"
+  ECHO Delphi - i386 win32 | out_split.bat "%log_file%"
   %cmd_line% "%%f" | out_split.bat "%log_file%"
   
   REM empty line after each compilation
@@ -53,7 +53,7 @@ FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
 FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
   ECHO %%f | out_split.bat "%log_file%"
   
-  ECHO Delphi - PurePascal | out_split.bat "%log_file%"
+  ECHO Delphi - i386 win32 PurePascal | out_split.bat "%log_file%"
   %cmd_line% -DPurePascal "%%f" | out_split.bat "%log_file%"
     
   ECHO; | out_split.bat "%log_file%"
