@@ -1,8 +1,8 @@
 @ECHO OFF
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
-SET /A old_fpc=1
+SET /A reinit_scripts=1
 
-CALL "compile_test_fpc.bat"
+CALL "update_test_scripts.bat"
 
 ENDLOCAL

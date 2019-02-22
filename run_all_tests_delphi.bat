@@ -1,6 +1,8 @@
 @ECHO OFF
 
-SET /A master_batch=1
+EXIT /B
+
+SET /A master_script=1
 
 CALL "get_global_paths.bat"
 

@@ -1,99 +1,78 @@
 @ECHO OFF
-SETLOCAL ENABLEDELAYEDEXPANSION ENABLEEXTENSIONS
+SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
 REM check is this script is called from a global check script or not
-IF DEFINED master_batch (
+IF DEFINED master_script (
   SET /A is_inner=1
 ) ELSE (
   SET /A is_inner=0
 )
 
 REM get directory path where this batch resides
-SET bat_dir=%~pd0
+SET "path_this=%~dp0"
+
+REM get path for script that is splitting output
+SET "script_tee=%path_this%utils\out_split.bat"
+
+REM list of compilation modes
+SET "comp_modes=i386-win32-O1-null i386-win32-O3-null i386-win32-O1-PurePascal i386-win32-O3-PurePascal x86_64-win64-O1-null x86_64-win64-O3-null x86_64-win64-O1-PurePascal x86_64-win64-O3-PurePascal"
+SET /A comp_mode_count=0
+FOR %%a IN (%comp_modes%) DO (SET /A comp_mode_count+=1)
 
 REM do following only when not called from global check script
 IF /I "%is_inner%" EQU "0" (
-  REM get directory where to store compiled binaries
-  SET out_dir=%bat_dir%fpc_out
-
-  REM prepare log file name
-  SET log_file=%bat_dir%fpc_log.txt
-
-  REM obtain auxiliary paths (path to compiler in fpc_path, path to libraries in libs_path)
-  CALL "get_global_paths.bat"
-
-  REM if the output directory exists, delete it
-  IF EXIST "!out_dir!" (
-    RD "!out_dir!" /S /Q)
-
-  REM create output directory
-  MKDIR "!out_dir!"
-
-  REM delete log file if it exists
-  IF EXIST "!log_file!" (
-    DEL "!log_file!")
+  IF DEFINED old_fpc (
+    CALL "%path_this%""utils\common.bat", :compile_test_internal_init, "fpc_old"
+  ) ELSE (
+    CALL "%path_this%""utils\common.bat", :compile_test_internal_init, "fpc"
+  )
 )
 
-REM build full command lines for compilation
-SET cmd_line="%fpc_path%" -vewnhq -dBARE_FPC -FU"%out_dir%" -Fu"%libs_path%"
-
-REM traverse all *.pas files and compile them
-REM every file is compiled twice - first for output into console,
-REM second-time the output is redirected into a log file
-FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
-  ECHO FPC - i386 win32 O1 | out_split.bat "%log_file%"
-  %cmd_line% -Twin32 -Pi386 -O1 "%%f" | out_split.bat "%log_file%"
-
-  REM empty line after each compilation
-  ECHO; | out_split.bat "%log_file%"
-
-  ECHO FPC - i386 win32 O3 | out_split.bat "%log_file%"
-  %cmd_line% -Twin32 -Pi386 -O3 "%%f" | out_split.bat "%log_file%"
-
-  ECHO; | out_split.bat "%log_file%"
+REM prepare command line for compilation
+IF DEFINED old_fpc (
+  SET cmd_line="%path_fpc_old%" -vewnhq -dBARE_FPC -Fu"%path_libs%"
+) ELSE (
+  SET cmd_line="%path_fpc%" -vewnhq -dBARE_FPC -Fu"%path_libs%"
 )
 
-FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
-  ECHO FPC - i386 win32 O1 PurePascal | out_split.bat "%log_file%"
-  %cmd_line% -Twin32 -Pi386 -O1 -dPurePascal "%%f" | out_split.bat "%log_file%"
+REM enumerate processed files
+CALL "%path_this%""utils\common.bat", :compile_test_enum_files
 
-  ECHO; | out_split.bat "%log_file%"
+REM show legend
+CALL "%path_this%""utils\common.bat", :compile_test_show_legend | "%script_tee%" "!file_log!"
 
-  ECHO FPC - i386 win32 O3 PurePascal | out_split.bat "%log_file%"
-  %cmd_line% -Twin32 -Pi386 -O3 -dPurePascal "%%f" | out_split.bat "%log_file%"
+REM traverse all found *.pas files and compile them
+SET /A file_list_index=1
+FOR %%f IN (%file_list%) DO (
+  REM show what file is about to be compiled
+  ECHO ^[F: !file_list_index!/!file_list_count!^] Compiling file: | "%script_tee%" "!file_log!"
+  ECHO ^[F: !file_list_index!/!file_list_count!^] %%~f | "%script_tee%" "!file_log!"
+  ECHO; | "%script_tee%" "!file_log!"
 
-  ECHO; | out_split.bat "%log_file%" 
-)
+  SET /A comp_mode_index=1
+  FOR %%a IN (%comp_modes%) DO (
+    FOR /F "tokens=1-4 delims=-" %%g in ("%%a") DO (
+      IF /I "%%j"=="null" (
+        ECHO ^[F: !file_list_index!/!file_list_count!^; C: !comp_mode_index!/!comp_mode_count!^] FPC - %%g %%h %%i | "%script_tee%" "!file_log!"
+      ) ELSE (
+        ECHO ^[F: !file_list_index!/!file_list_count!^; C: !comp_mode_index!/!comp_mode_count!^] FPC - %%g %%h %%i %%j | "%script_tee%" "!file_log!"
+      )
 
-FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
-  ECHO FPC - x86_64 win64 O1 | out_split.bat "%log_file%"
-  %cmd_line% -Twin64 -Px86_64 -O1 "%%f" | out_split.bat "%log_file%"
+      REM compilation
+      %cmd_line% -FU"!path_out!\%%a" -P"%%g" -T"%%h" -"%%i" -d"%%j" "%%~f" | "%script_tee%" "!file_log!"
 
-  ECHO; | out_split.bat "%log_file%"
+      ECHO; | "%script_tee%" "!file_log!"
 
-  ECHO FPC - x86_64 win64 O3 | out_split.bat "%log_file%"
-  %cmd_line% -Twin64 -Px86_64 -O3 "%%f" | out_split.bat "%log_file%"
+      SET /A comp_mode_index+=1
+    )
+  )
 
-  ECHO; | out_split.bat "%log_file%"
-)
-
-FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
-  ECHO FPC - x86_64 win64 O1 PurePascal | out_split.bat "%log_file%"
-  %cmd_line% -Twin64 -Px86_64 -O1 -dPurePascal "%%f" | out_split.bat "%log_file%"
-
-  ECHO; | out_split.bat "%log_file%"
-  
-  ECHO FPC - x86_64 win64 O3 PurePascal | out_split.bat "%log_file%"
-  %cmd_line% -Twin64 -Px86_64 -O3 -dPurePascal "%%f" | out_split.bat "%log_file%"
-
-  ECHO; | out_split.bat "%log_file%" 
+  SET /A file_list_index+=1
 )
 
 REM do following only when not called from global check script
 IF /I "%is_inner%" EQU "0" (
-  REM wait for user interaction
-  @PAUSE
-
-  REM delete the output folder, it is not needed anymore
-  RD "%out_dir%" /S /Q
+  CALL "%path_this%""utils\common.bat", :compile_test_internal_final
 )
+
+ENDLOCAL

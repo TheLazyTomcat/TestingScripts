@@ -1,69 +1,70 @@
 @ECHO OFF
-SETLOCAL ENABLEDELAYEDEXPANSION ENABLEEXTENSIONS
+SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
 REM check is this script is called from a global check script or not
-IF DEFINED master_batch (
+IF DEFINED master_script (
   SET /A is_inner=1
 ) ELSE (
   SET /A is_inner=0
 )
 
 REM get directory path where this batch resides
-SET bat_dir=%~pd0
+SET "path_this=%~dp0"
+
+REM get path for script that is splitting output
+SET "script_tee=%path_this%utils\out_split.bat"
+
+REM list of compilation modes
+SET "comp_modes=i386-win32-null i386-win32-PurePascal"
+SET /A comp_mode_count=0
+FOR %%a IN (%comp_modes%) DO (SET /A comp_mode_count+=1)
 
 REM do following only when not called from global check script
 IF /I "%is_inner%" EQU "0" (
-  REM get directory where to store compiled binaries
-  SET out_dir=%bat_dir%delphi_out
-
-  REM prepare log file name
-  SET log_file=%bat_dir%delphi_log.txt
-
-  REM obtain auxiliary paths (path to compiler in fpc_path, path to libraries in libs_path)
-  CALL "get_global_paths.bat"
-
-  REM if the output directory exists, delete it
-  IF EXIST "!out_dir!" (
-    RD "!out_dir!" /S /Q)
-
-  REM create output directory
-  MKDIR "!out_dir!"
-
-  REM delete log file if it exists
-  IF EXIST "!log_file!" (
-    DEL "!log_file!")
+  CALL "%path_this%""utils\common.bat", :compile_test_internal_init, "delphi"
 )
 
-REM build full command line for compilation
-SET cmd_line=dcc32 -Q -B -N"%out_dir%" -U"%%~pdf.";"%bat_dir%..\Dev";"%out_dir%";"%libs_path%" -I"%bat_dir%..\Dev";"%libs_path%"
+REM prepare command line for compilation
+SET cmd_line=dcc32 -Q -B -U"%%~pdf.";"%path_this%..\Dev";"%path_libs%" -I"%path_this%..\Dev";"%path_libs%"
 
-REM traverse all *.pas files and compile them
-REM every file is compiled twice - first for output into console,
-REM second-time the output is redirected into a log file
-FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
-  ECHO %%f | out_split.bat "%log_file%"
+REM enumerate processed files
+CALL "%path_this%""utils\common.bat", :compile_test_enum_files
 
-  ECHO Delphi - i386 win32 | out_split.bat "%log_file%"
-  %cmd_line% "%%f" | out_split.bat "%log_file%"
-  
-  REM empty line after each compilation
-  ECHO; | out_split.bat "%log_file%"
-)
+REM show legend
+CALL "%path_this%""utils\common.bat", :compile_test_show_legend | "%script_tee%" "!file_log!"
 
-FOR /R "%bat_dir%..\Dev" %%f IN ("*.pas") DO (
-  ECHO %%f | out_split.bat "%log_file%"
-  
-  ECHO Delphi - i386 win32 PurePascal | out_split.bat "%log_file%"
-  %cmd_line% -DPurePascal "%%f" | out_split.bat "%log_file%"
-    
-  ECHO; | out_split.bat "%log_file%"
+REM traverse all found *.pas files and compile them
+SET /A file_list_index=1
+FOR %%f IN (%file_list%) DO (
+  REM show what file is about to be compiled
+  ECHO ^[F: !file_list_index!/!file_list_count!^] Compiling file: | "%script_tee%" "!file_log!"
+  ECHO ^[F: !file_list_index!/!file_list_count!^] %%~f | "%script_tee%" "!file_log!"
+  ECHO; | "%script_tee%" "!file_log!"
+
+  SET /A comp_mode_index=1
+  FOR %%a IN (%comp_modes%) DO (
+    FOR /F "tokens=1-3 delims=-" %%g in ("%%a") DO (
+      IF /I "%%i"=="null" (
+        ECHO ^[F: !file_list_index!/!file_list_count!^; C: !comp_mode_index!/!comp_mode_count!^] Delphi - %%g %%h | "%script_tee%" "!file_log!"
+      ) ELSE (
+        ECHO ^[F: !file_list_index!/!file_list_count!^; C: !comp_mode_index!/!comp_mode_count!^] Delphi - %%g %%h %%i | "%script_tee%" "!file_log!"
+      )
+
+      REM compilation
+      %cmd_line% -D"%%i" -U"!path_out!\%%a" -N"!path_out!\%%a" "%%~f" | "%script_tee%" "!file_log!"
+
+      ECHO; | "%script_tee%" "!file_log!"
+
+      SET /A comp_mode_index+=1
+    )
+  )
+
+  SET /A file_list_index+=1
 )
 
 REM do following only when not called from global check script
 IF /I "%is_inner%" EQU "0" (
-  REM wait for user interaction
-  @PAUSE
-
-  REM delete the output folder, it is not needed anymore
-  RD "%out_dir%" /S /Q
+  CALL "%path_this%""utils\common.bat", :compile_test_internal_final
 )
+
+ENDLOCAL
