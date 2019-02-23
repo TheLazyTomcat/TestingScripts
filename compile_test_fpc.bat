@@ -1,7 +1,7 @@
 @ECHO OFF
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
-REM check is this script is called from a global check script or not
+REM check if this script is called from a global check script or not
 IF DEFINED master_script (
   SET /A is_inner=1
 ) ELSE (
@@ -15,16 +15,20 @@ REM get path for script that is splitting output
 SET "script_tee=%path_this%utils\out_split.bat"
 
 REM list of compilation modes
-SET "comp_modes=i386-win32-O1-null i386-win32-O3-null i386-win32-O1-PurePascal i386-win32-O3-PurePascal x86_64-win64-O1-null x86_64-win64-O3-null x86_64-win64-O1-PurePascal x86_64-win64-O3-PurePascal"
+IF DEFINED old_fpc (
+  SET /P comp_modes=<"%path_this%utils\comp_modes_fpc_old.txt"
+) ELSE (
+  SET /P comp_modes=<"%path_this%utils\comp_modes_fpc.txt"
+)
 SET /A comp_mode_count=0
 FOR %%a IN (%comp_modes%) DO (SET /A comp_mode_count+=1)
 
 REM do following only when not called from global check script
 IF /I "%is_inner%" EQU "0" (
   IF DEFINED old_fpc (
-    CALL "%path_this%""utils\common.bat", :compile_test_internal_init, "fpc_old"
+    CALL "%path_this%""utils\functions.bat", :compile_test_internal_init, "fpc_old"
   ) ELSE (
-    CALL "%path_this%""utils\common.bat", :compile_test_internal_init, "fpc"
+    CALL "%path_this%""utils\functions.bat", :compile_test_internal_init, "fpc"
   )
 )
 
@@ -36,10 +40,12 @@ IF DEFINED old_fpc (
 )
 
 REM enumerate processed files
-CALL "%path_this%""utils\common.bat", :compile_test_enum_files
+CALL "%path_this%""utils\functions.bat", :compile_test_enum_files
 
 REM show legend
-CALL "%path_this%""utils\common.bat", :compile_test_show_legend | "%script_tee%" "!file_log!"
+IF /I "%is_inner%" EQU "0" (
+  CALL "%path_this%""utils\functions.bat", :compile_test_show_legend | "%script_tee%" "!file_log!"
+)
 
 REM traverse all found *.pas files and compile them
 SET /A file_list_index=1
@@ -72,7 +78,7 @@ FOR %%f IN (%file_list%) DO (
 
 REM do following only when not called from global check script
 IF /I "%is_inner%" EQU "0" (
-  CALL "%path_this%""utils\common.bat", :compile_test_internal_final
+  CALL "%path_this%""utils\functions.bat", :compile_test_internal_final
 )
 
 ENDLOCAL

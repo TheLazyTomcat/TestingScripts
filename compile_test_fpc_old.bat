@@ -3,6 +3,6 @@ SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
 SET /A old_fpc=1
 
-CALL "compile_test_fpc.bat"
+CALL "%~dp0""compile_test_fpc.bat"
 
 ENDLOCAL

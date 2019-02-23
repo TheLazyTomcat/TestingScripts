@@ -1,7 +1,7 @@
 @ECHO OFF
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
-REM check is this script is called from a global check script or not
+REM check if this script is called from a global check script or not
 IF DEFINED master_script (
   SET /A is_inner=1
 ) ELSE (
@@ -15,23 +15,25 @@ REM get path for script that is splitting output
 SET "script_tee=%path_this%utils\out_split.bat"
 
 REM list of compilation modes
-SET "comp_modes=i386-win32-null i386-win32-PurePascal"
+SET /P comp_modes=<"%path_this%utils\comp_modes_delphi.txt"
 SET /A comp_mode_count=0
 FOR %%a IN (%comp_modes%) DO (SET /A comp_mode_count+=1)
 
 REM do following only when not called from global check script
 IF /I "%is_inner%" EQU "0" (
-  CALL "%path_this%""utils\common.bat", :compile_test_internal_init, "delphi"
+  CALL "%path_this%""utils\functions.bat", :compile_test_internal_init, "delphi"
 )
 
 REM prepare command line for compilation
 SET cmd_line=dcc32 -Q -B -U"%%~pdf.";"%path_this%..\Dev";"%path_libs%" -I"%path_this%..\Dev";"%path_libs%"
 
 REM enumerate processed files
-CALL "%path_this%""utils\common.bat", :compile_test_enum_files
+CALL "%path_this%""utils\functions.bat", :compile_test_enum_files
 
 REM show legend
-CALL "%path_this%""utils\common.bat", :compile_test_show_legend | "%script_tee%" "!file_log!"
+IF /I "%is_inner%" EQU "0" (
+  CALL "%path_this%""utils\functions.bat", :compile_test_show_legend | "%script_tee%" "!file_log!"
+)
 
 REM traverse all found *.pas files and compile them
 SET /A file_list_index=1
@@ -64,7 +66,7 @@ FOR %%f IN (%file_list%) DO (
 
 REM do following only when not called from global check script
 IF /I "%is_inner%" EQU "0" (
-  CALL "%path_this%""utils\common.bat", :compile_test_internal_final
+  CALL "%path_this%""utils\functions.bat", :compile_test_internal_final
 )
 
 ENDLOCAL

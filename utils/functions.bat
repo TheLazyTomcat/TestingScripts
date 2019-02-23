@@ -12,7 +12,7 @@ REM initializes directories and path variables for unit compilation tests
   REM prepare log file name
   SET "file_log=%path_this%%~2_log.txt"
 
-  REM obtain auxiliary paths (path to compiler in fpc_path, path to libraries in libs_path)
+  REM obtain auxiliary paths (paths to compilers, paths to libraries, ...)
   CALL "%path_this%""utils\get_global_paths.bat"
 
   REM if the output directory exists, delete it
@@ -37,10 +37,10 @@ REM get list of processed pas files and their count
   SET file_list=
   FOR /R "%path_this%..\Dev" %%f IN ("*.pas") DO (
     SET "file_list=!file_list!,"%%~f""
-    ECHO %%~f
+    ECHO %%~f | "%script_tee%" "!file_log!"
     SET /A file_list_count+=1
   )
-  ECHO ...%file_list_count% files found 
+  ECHO ...%file_list_count% files found | "%script_tee%" "!file_log!" 
   ECHO; | "%script_tee%" "!file_log!"
 EXIT /B
 
@@ -70,7 +70,9 @@ REM get list of project files and their count
   SET file_list=
   FOR /R "%path_this%..\Dev" %%f IN ("*.dpr","*.lpi") DO (
     SET "file_list=!file_list!,"%%~f""
+    ECHO %%~f | "%script_tee%" "!file_log!"
     SET /A file_list_count+=1
   )
+  ECHO ...%file_list_count% project files found | "%script_tee%" "!file_log!" 
   ECHO; | "%script_tee%" "!file_log!"
 EXIT /B

@@ -15,7 +15,7 @@ REM get path for script that is splitting output
 SET "script_tee=%path_this%utils\out_split.bat"
 
 REM list of build modes for FPC
-SET /P fpc_build_modes=<"%path_this%fpc_build_modes.txt"
+SET /P fpc_build_modes=<"%path_this%build_modes_fpc.txt"
 SET /A fpc_build_mode_count=0
 FOR %%a IN (%fpc_build_modes%) DO (SET /A fpc_build_mode_count+=1)
 
@@ -35,10 +35,10 @@ SET "cmd_lazarus_old=-B --bm="
 SET "cmd_lazarus=-B --no-write-project --bm="
 
 REM enumerate project files
-CALL "%path_this%""utils\common.bat", :project_compile_test_enum_files
+CALL "%path_this%""utils\functions.bat", :project_compile_test_enum_files
 
 REM show legend
-CALL "%path_this%""utils\common.bat", :compile_test_show_legend | "%script_tee%" "!file_log!"
+CALL "%path_this%""utils\functions.bat", :compile_test_show_legend | "%script_tee%" "!file_log!"
 
 REM search for projects and compile them
 SET /A file_list_index=1
