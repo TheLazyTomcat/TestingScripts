@@ -11,7 +11,7 @@ IF DEFINED master_script (
 REM get directory path where this batch resides
 SET "path_this=%~pd0"
 
-REM get path for script that is splitting output 
+REM get path for script that is splitting output
 SET "script_tee=%path_this%utils\out_split.bat"
 
 REM list of build modes for FPC
@@ -52,11 +52,11 @@ FOR /R "..\Dev" %%f IN ("*.dpr","*.lpi") DO (
   REM Delphi builds
   IF /I "%%~xf"==".dpr" (
     ECHO ^[F: !file_list_index!/!file_list_count!^; C: 1/1^] Delphi | "%script_tee%" "!file_log!"
-    
+
     CD "%%~dpf"
 
     %cmd_delphi% "%%~f" | "%script_tee%" "!file_log!"
-    
+
     ECHO; | "%script_tee%" "!file_log!"
   )
 
@@ -69,23 +69,23 @@ FOR /R "..\Dev" %%f IN ("*.dpr","*.lpi") DO (
     FOR %%m in (%fpc_build_modes%) DO (
       REM building in old lazarus
       ECHO ^[F: !file_list_index!/!file_list_count!^; C: !fpc_build_mode_index!/!fpc_build_mode_count!^] Old Lazarus - %%m | "%script_tee%" "!file_log!"
-          
+
       %path_lazb_old% %cmd_lazarus_old%%%m "%%~f" | "%script_tee%" "!file_log!"
-      
+
       ECHO; | "%script_tee%" "!file_log!"
-      
+
       REM building in current lazarus
       ECHO ^[F: !file_list_index!/!file_list_count!^; C: !fpc_build_mode_index!/!fpc_build_mode_count!^] Actual Lazarus - %%m | "%script_tee%" "!file_log!"
-     
+
       %path_lazb% %cmd_lazarus%%%m "%%~f" | "%script_tee%" "!file_log!"
-      
+
       ECHO; | "%script_tee%" "!file_log!"
-      
-      SET /A fpc_build_mode_index+=1   
+
+      SET /A fpc_build_mode_index+=1
     )
   )
-  
-  SET /A file_list_index+=1 
+
+  SET /A file_list_index+=1
 )
 
 REM do following only when not called from global check script

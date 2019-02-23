@@ -37,8 +37,8 @@ FOR %%f IN (%file_list%) DO (
     )
     REM copy the script files
     COPY /Y "%path_this%""utils\comp_modes_delphi.txt" "%%~dpf""CompileTests\utils\comp_modes_delphi.txt" >NUL
-    COPY /Y "%path_this%""utils\comp_modes_fpc_old.txt" "%%~dpf""CompileTests\utils\comp_modes_fpc_old.txt" >NUL   
-    COPY /Y "%path_this%""utils\comp_modes_fpc.txt" "%%~dpf""CompileTests\utils\comp_modes_fpc.txt" >NUL    
+    COPY /Y "%path_this%""utils\comp_modes_fpc_old.txt" "%%~dpf""CompileTests\utils\comp_modes_fpc_old.txt" >NUL
+    COPY /Y "%path_this%""utils\comp_modes_fpc.txt" "%%~dpf""CompileTests\utils\comp_modes_fpc.txt" >NUL
     COPY /Y "%path_this%""utils\functions.bat" "%%~dpf""CompileTests\utils\functions.bat" >NUL
     COPY /Y "%path_this%""utils\out_split.bat" "%%~dpf""CompileTests\utils\out_split.bat" >NUL
     COPY /Y "%path_this%""utils\get_global_paths.bat" "%%~dpf""CompileTests\utils\get_global_paths.bat" >NUL

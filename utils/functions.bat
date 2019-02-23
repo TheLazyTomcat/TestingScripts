@@ -40,7 +40,7 @@ REM get list of processed pas files and their count
     ECHO %%~f | "%script_tee%" "!file_log!"
     SET /A file_list_count+=1
   )
-  ECHO ...%file_list_count% files found | "%script_tee%" "!file_log!" 
+  ECHO ...%file_list_count% files found | "%script_tee%" "!file_log!"
   ECHO; | "%script_tee%" "!file_log!"
 EXIT /B
 
@@ -73,6 +73,6 @@ REM get list of project files and their count
     ECHO %%~f | "%script_tee%" "!file_log!"
     SET /A file_list_count+=1
   )
-  ECHO ...%file_list_count% project files found | "%script_tee%" "!file_log!" 
+  ECHO ...%file_list_count% project files found | "%script_tee%" "!file_log!"
   ECHO; | "%script_tee%" "!file_log!"
 EXIT /B
