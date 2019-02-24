@@ -3,6 +3,6 @@ SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
 SET /A reinit_scripts=1
 
-CALL "%~dp0""update_test_scripts.bat"
+CALL "%~dp0update_test_scripts.bat"
 
 ENDLOCAL

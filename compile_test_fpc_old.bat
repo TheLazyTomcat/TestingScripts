@@ -1,8 +1,9 @@
 @ECHO OFF
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
-SET /A old_fpc=1
+SET "comp_str=fpc_old"
+SET "comp_text=Old FPC"
 
-CALL "%~dp0""compile_test_fpc.bat"
+CALL "%~dp0utils\compile_test.bat"
 
 ENDLOCAL

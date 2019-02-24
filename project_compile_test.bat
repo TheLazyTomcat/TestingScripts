@@ -1,13 +1,6 @@
 @ECHO OFF
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
-REM check is this script is called from a global check script or not
-IF DEFINED master_script (
-  SET /A is_inner=1
-) ELSE (
-  SET /A is_inner=0
-)
-
 REM get directory path where this batch resides
 SET "path_this=%~pd0"
 
@@ -34,11 +27,20 @@ SET "cmd_delphi=dcc32 -Q -B"
 SET "cmd_lazarus_old=-B --bm="
 SET "cmd_lazarus=-B --no-write-project --bm="
 
-REM enumerate project files
-CALL "%path_this%""utils\functions.bat", :project_compile_test_enum_files
+REM get list of project files and their count
+ECHO Enumerating project files, please wait... | "%script_tee%" "!file_log!"
+SET /A file_list_count=0
+SET file_list=
+FOR /R "%path_this%..\Dev" %%f IN ("*.dpr","*.lpi") DO (
+  SET "file_list=!file_list!,"%%~f""
+  ECHO %%~f | "%script_tee%" "!file_log!"
+  SET /A file_list_count+=1
+)
+ECHO ...%file_list_count% project file(s) found | "%script_tee%" "!file_log!"
+ECHO; | "%script_tee%" "!file_log!"
 
 REM show legend
-CALL "%path_this%""utils\functions.bat", :compile_test_show_legend | "%script_tee%" "!file_log!"
+CALL "%path_this%""utils\functions.bat", :show_legend | "%script_tee%" "!file_log!"
 
 REM search for projects and compile them
 SET /A file_list_index=1
@@ -88,10 +90,7 @@ FOR /R "..\Dev" %%f IN ("*.dpr","*.lpi") DO (
   SET /A file_list_index+=1
 )
 
-REM do following only when not called from global check script
-IF /I "%is_inner%" EQU "0" (
-  REM wait for user interaction
-  @PAUSE
-)
+REM wait for user interaction
+@PAUSE
 
 ENDLOCAL

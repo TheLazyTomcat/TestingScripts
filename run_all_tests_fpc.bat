@@ -1,8 +1,9 @@
 @ECHO OFF
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
-SET comp_str=fpc
+SET "comp_str=fpc"
+SET "comp_text=FPC"
 
-CALL "%~dp0""run_all_tests.bat"
+CALL "%~dp0utils\run_all_tests.bat"
 
 ENDLOCAL
