@@ -1,7 +1,7 @@
 @ECHO OFF
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
-SET /A aux_build=0
+SET /A aux_build=1
 
 CALL "%~dp0utils\program_compile_test.bat"
 

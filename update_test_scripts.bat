@@ -33,6 +33,11 @@ FOR /R ".." %%f IN (.) DO (
     SET /A file_list_count+=1
     ECHO found scripts folder: %%~dpf | "%script_tee%" "!file_log!"
   )
+  IF /I "%%~nxf"=="AuxCompileTests" (
+    SET "file_list=!file_list!,"%%~f""
+    SET /A file_list_count+=1
+    ECHO found scripts folder: %%~dpf | "%script_tee%" "!file_log!"
+  )  
 )
 ECHO ...%file_list_count% script folders found | "%script_tee%" "!file_log!"
 ECHO; | "%script_tee%" "!file_log!"
@@ -59,7 +64,7 @@ FOR %%f IN (%file_list%) DO (
     COPY /Y "%path_this%""utils\functions.bat" "%%~dpf""CompileTests\utils\functions.bat" >NUL
     COPY /Y "%path_this%""utils\out_split.bat" "%%~dpf""CompileTests\utils\out_split.bat" >NUL
     COPY /Y "%path_this%""utils\get_global_paths.bat" "%%~dpf""CompileTests\utils\get_global_paths.bat" >NUL
-    COPY /Y "%path_this%""utils\compile_test.bat" "%%~dpf""CompileTests\utils\compile_test.bat" >NUL
+    COPY /Y "%path_this%""utils\unit_compile_test.bat" "%%~dpf""CompileTests\utils\unit_compile_test.bat" >NUL
     COPY /Y "%path_this%""compile_test_fpc.bat" "%%~dpf""CompileTests\compile_test_fpc.bat" >NUL
     COPY /Y "%path_this%""compile_test_fpc_old.bat" "%%~dpf""CompileTests\compile_test_fpc_old.bat" >NUL
     COPY /Y "%path_this%""compile_test_delphi.bat" "%%~dpf""CompileTests\compile_test_delphi.bat" >NUL
@@ -89,7 +94,36 @@ FOR %%f IN (%file_list%) DO (
     COPY /Y "%path_this%""utils\functions.bat" "%%~dpf""PrgCompileTests\utils\functions.bat" >NUL
     COPY /Y "%path_this%""utils\out_split.bat" "%%~dpf""PrgCompileTests\utils\out_split.bat" >NUL
     COPY /Y "%path_this%""utils\get_global_paths.bat" "%%~dpf""PrgCompileTests\utils\get_global_paths.bat" >NUL
+    COPY /Y "%path_this%""utils\program_compile_test.bat" "%%~dpf""PrgCompileTests\utils\program_compile_test.bat" >NUL
     COPY /Y "%path_this%""project_compile_test.bat" "%%~dpf""PrgCompileTests\project_compile_test.bat" >NUL
+    SET /A file_list_index+=1
+  )
+  
+  REM auxiliary compile tests...
+  IF /I "%%~nxf"=="AuxCompileTests" (
+    REM cleanup
+    IF DEFINED reinit_scripts (
+      REM backup build modes
+      SET /P fpc_build_modes_bck=<"%%~dpf""AuxCompileTests\build_modes_fpc.txt"
+          
+      REM delete and then reconstruct directories
+      RD "%%~dpf""AuxCompileTests" /S /Q
+      MKDIR "%%~dpf""AuxCompileTests"
+      MKDIR "%%~dpf""AuxCompileTests\utils"
+      
+      REM restore build modes
+      ECHO;!fpc_build_modes_bck!>"%%~dpf""AuxCompileTests\build_modes_fpc.txt"      
+
+      ECHO ^[!file_list_index!/!file_list_count!^] initializing scripts in project: %%~dpf | "%script_tee%" "!file_log!"
+    ) ELSE (
+      ECHO ^[!file_list_index!/!file_list_count!^] updating scripts in project: %%~dpf | "%script_tee%" "!file_log!"
+    )
+    REM copy the script files
+    COPY /Y "%path_this%""utils\functions.bat" "%%~dpf""AuxCompileTests\utils\functions.bat" >NUL
+    COPY /Y "%path_this%""utils\out_split.bat" "%%~dpf""AuxCompileTests\utils\out_split.bat" >NUL
+    COPY /Y "%path_this%""utils\get_global_paths.bat" "%%~dpf""AuxCompileTests\utils\get_global_paths.bat" >NUL
+    COPY /Y "%path_this%""utils\program_compile_test.bat" "%%~dpf""AuxCompileTests\utils\program_compile_test.bat" >NUL
+    COPY /Y "%path_this%""auxiliary_compile_test.bat" "%%~dpf""AuxCompileTests\auxiliary_compile_test.bat" >NUL
     SET /A file_list_index+=1
   )
 )
