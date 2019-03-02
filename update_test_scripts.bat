@@ -37,10 +37,17 @@ FOR /R ".." %%f IN (.) DO (
     SET "file_list=!file_list!,"%%~f""
     SET /A file_list_count+=1
     ECHO found scripts folder: %%~dpf | "%script_tee%" "!file_log!"
-  )  
+  )
 )
 ECHO ...%file_list_count% script folders found | "%script_tee%" "!file_log!"
 ECHO; | "%script_tee%" "!file_log!"
+
+REM temp folder for backups
+IF DEFINED reinit_scripts (
+  IF NOT EXIST "%TEMP%""\comp_tests_baks" (
+    MKDIR "%TEMP%""\comp_tests_baks"
+  )
+)
 
 REM traverse the list and process individual entries
 SET /A file_list_index=1
@@ -76,7 +83,7 @@ FOR %%f IN (%file_list%) DO (
     REM cleanup
     IF DEFINED reinit_scripts (
       REM backup build modes
-      SET /P fpc_build_modes_bck=<"%%~dpf""PrgCompileTests\build_modes_fpc.txt"
+      COPY /Y "%%~dpf""PrgCompileTests\build_modes_fpc.txt" "%TEMP%""\comp_tests_baks\temp.bak" >NUL
 
       REM delete and then reconstruct directories
       RD "%%~dpf""PrgCompileTests" /S /Q
@@ -84,7 +91,7 @@ FOR %%f IN (%file_list%) DO (
       MKDIR "%%~dpf""PrgCompileTests\utils"
 
       REM restore build modes
-      ECHO;!fpc_build_modes_bck!>"%%~dpf""PrgCompileTests\build_modes_fpc.txt"
+      COPY /Y "%TEMP%""\comp_tests_baks\temp.bak" "%%~dpf""PrgCompileTests\build_modes_fpc.txt" >NUL
 
       ECHO ^[!file_list_index!/!file_list_count!^] initializing scripts in project: %%~dpf | "%script_tee%" "!file_log!"
     ) ELSE (
@@ -98,21 +105,21 @@ FOR %%f IN (%file_list%) DO (
     COPY /Y "%path_this%""project_compile_test.bat" "%%~dpf""PrgCompileTests\project_compile_test.bat" >NUL
     SET /A file_list_index+=1
   )
-  
+
   REM auxiliary compile tests...
   IF /I "%%~nxf"=="AuxCompileTests" (
     REM cleanup
     IF DEFINED reinit_scripts (
       REM backup build modes
-      SET /P fpc_build_modes_bck=<"%%~dpf""AuxCompileTests\build_modes_fpc.txt"
-          
+      COPY /Y "%%~dpf""AuxCompileTests\build_modes_fpc.txt" "%TEMP%""\comp_tests_baks\temp.bak" >NUL
+
       REM delete and then reconstruct directories
       RD "%%~dpf""AuxCompileTests" /S /Q
       MKDIR "%%~dpf""AuxCompileTests"
       MKDIR "%%~dpf""AuxCompileTests\utils"
-      
+
       REM restore build modes
-      ECHO;!fpc_build_modes_bck!>"%%~dpf""AuxCompileTests\build_modes_fpc.txt"      
+      COPY /Y "%TEMP%""\comp_tests_baks\temp.bak" "%%~dpf""AuxCompileTests\build_modes_fpc.txt" >NUL
 
       ECHO ^[!file_list_index!/!file_list_count!^] initializing scripts in project: %%~dpf | "%script_tee%" "!file_log!"
     ) ELSE (
@@ -127,5 +134,17 @@ FOR %%f IN (%file_list%) DO (
     SET /A file_list_index+=1
   )
 )
+
+REM remove temp folder
+IF DEFINED reinit_scripts (
+  IF EXIST "%TEMP%""\comp_tests_baks" (
+    RD "%TEMP%""\comp_tests_baks" /S /Q
+  )
+)
+
+REM wait for user input
+ECHO; | "%script_tee%" "%file_log%"
+ECHO Done | "%script_tee%" "%file_log%"
+@PAUSE
 
 ENDLOCAL
