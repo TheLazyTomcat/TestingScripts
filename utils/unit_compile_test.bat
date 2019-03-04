@@ -50,7 +50,7 @@ SET /A file_list_count=0
 SET file_list=
 FOR /R "%path_this%..\..\Dev" %%f IN ("*.pas") DO (
   SET "file_list=!file_list!,"%%~f""
-  ECHO %%~f | "%script_tee%" "!file_log!" | "%script_tee%" "!file_log!"
+  ECHO %%~f | "%script_tee%" "!file_log!"
   SET /A file_list_count+=1
 )
 ECHO ...!file_list_count! file^(s^) found | "%script_tee%" "!file_log!"
