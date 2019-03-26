@@ -99,6 +99,10 @@ FOR %%f IN (!file_list!) DO (
         REM old fpc
         "%path_fpc_old%" -vewnhq -dBARE_FPC -Fu"%path_libs%" -FU"!path_out!\%%a" -P"%%g" -T"%%h" -"%%i" -d"%%j" "%%~f" | "%script_tee%" "!file_log!"
       )
+      IF /I "%comp_str%"=="fpc_xlin" (
+        REM old fpc
+        "%path_fpc_xlin%" -vewnhq -dBARE_FPC -Fu"%path_libs%" -FU"!path_out!\%%a" -P"%%g" -T"%%h" -"%%i" -d"%%j" "%%~f" | "%script_tee%" "!file_log!"
+      )      
       IF /I "%comp_str%"=="fpc" (
         REM actual FPC
         "%path_fpc%" -vewnhq -dBARE_FPC -Fu"%path_libs%" -FU"!path_out!\%%a" -P"%%g" -T"%%h" -"%%i" -d"%%j" "%%~f" | "%script_tee%" "!file_log!"

@@ -52,6 +52,7 @@ IF DEFINED reinit_scripts (
 REM traverse the list and process individual entries
 SET /A file_list_index=1
 FOR %%f IN (%file_list%) DO (
+
   REM unit compile tests...
   IF /I "%%~nxf"=="CompileTests" (
     REM cleanup
@@ -67,6 +68,7 @@ FOR %%f IN (%file_list%) DO (
     REM copy the script files
     COPY /Y "%path_this%""utils\comp_modes_delphi.txt" "%%~dpf""CompileTests\utils\comp_modes_delphi.txt" >NUL
     COPY /Y "%path_this%""utils\comp_modes_fpc_old.txt" "%%~dpf""CompileTests\utils\comp_modes_fpc_old.txt" >NUL
+    COPY /Y "%path_this%""utils\comp_modes_fpc_xlin.txt" "%%~dpf""CompileTests\utils\comp_modes_fpc_xlin.txt" >NUL
     COPY /Y "%path_this%""utils\comp_modes_fpc.txt" "%%~dpf""CompileTests\utils\comp_modes_fpc.txt" >NUL
     COPY /Y "%path_this%""utils\functions.bat" "%%~dpf""CompileTests\utils\functions.bat" >NUL
     COPY /Y "%path_this%""utils\out_split.bat" "%%~dpf""CompileTests\utils\out_split.bat" >NUL
@@ -74,6 +76,7 @@ FOR %%f IN (%file_list%) DO (
     COPY /Y "%path_this%""utils\unit_compile_test.bat" "%%~dpf""CompileTests\utils\unit_compile_test.bat" >NUL
     COPY /Y "%path_this%""compile_test_fpc.bat" "%%~dpf""CompileTests\compile_test_fpc.bat" >NUL
     COPY /Y "%path_this%""compile_test_fpc_old.bat" "%%~dpf""CompileTests\compile_test_fpc_old.bat" >NUL
+    COPY /Y "%path_this%""compile_test_fpc_xlin.bat" "%%~dpf""CompileTests\compile_test_fpc_xlin.bat" >NUL
     COPY /Y "%path_this%""compile_test_delphi.bat" "%%~dpf""CompileTests\compile_test_delphi.bat" >NUL
     SET /A file_list_index+=1
   )
