@@ -1,9 +1,14 @@
 @ECHO OFF
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
+REM setup all-base path for further scripts
+SET "path_all_base=%~dp0"
+
+REM initialize compilation variables
 SET "comp_str=fpc"
 SET "comp_text=FPC"
 
-CALL "%~dp0utils\run_all_tests.bat"
+REM run common script
+CALL "%path_base%utils\run_all_tests.bat"
 
 ENDLOCAL

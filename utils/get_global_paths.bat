@@ -1,7 +1,11 @@
 @ECHO OFF
 
+REM Note that content of this script is user- and system-specific, so it is in
+REM its current form of no use for most people
+
 REM path to latest installed fpc and lazbuild
-SET "path_fpc=C:\Lazarus\fpc\3.2.2\bin\i386-win32\fpc.exe"
+REM SET "path_fpc=C:\Lazarus\fpc\3.2.2\bin\i386-win32\fpc.exe"
+SET "path_fpc=C:\Lazarus\fpc\3.0.4\bin\i386-win32\fpc.exe"
 SET "path_lazb=C:\Lazarus\lazbuild.exe"
 
 REM path to older (before 3.0.0) fpc and lazbuild

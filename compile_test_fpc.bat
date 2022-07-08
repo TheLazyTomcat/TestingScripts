@@ -1,9 +1,14 @@
 @ECHO OFF
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
-SET "comp_str=fpc"
-SET "comp_text=FPC"
+REM setup base path for further scripts
+SET "path_base=%~dp0"
 
-CALL "%~dp0utils\unit_compile_test.bat"
+REM initialize compilation variables
+SET "comp_str=fpc"
+SET "comp_text=Current FPC"
+
+REM run the compilation test script
+CALL "%path_base%utils\unit_compile_test.bat"
 
 ENDLOCAL
