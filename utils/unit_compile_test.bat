@@ -105,19 +105,19 @@ FOR %%f IN (%file_list%) DO (
       REM compilation
       IF /I "%comp_str%"=="delphi" (
         REM delphi
-        dcc32 -Q -B -U"%path_base%..\Dev";"%path_libs%";"%path_out%\%%a" -I"%path_base%..\Dev";"%path_libs%" -N"%path_out%\%%a" !comp_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
+        dcc32 -Q -B -dCOMPTEST -U"%path_base%..\Dev";"%path_libs%";"%path_out%\%%a" -I"%path_base%..\Dev";"%path_libs%" -N"%path_out%\%%a" !comp_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
       )
       IF /I "%comp_str%"=="fpc" (
         REM actual FPC
-        "%path_fpc%" -vewnhq -dBARE_FPC -Fu"%path_libs%" -FU"%path_out%\%%a" -P%%g -T%%h !comp_olevel_cmd! !comp_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
+        "%path_fpc%" -vewnhq -dCOMPTEST -dBARE_FPC -Fu"%path_libs%" -FU"%path_out%\%%a" -P%%g -T%%h !comp_olevel_cmd! !comp_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
       )      
       IF /I "%comp_str%"=="fpc_old" (
         REM old fpc
-        "%path_fpc_old%" -vewnhq -dBARE_FPC -Fu"%path_libs%" -FU"%path_out%\%%a" -P%%g -T%%h !comp_olevel_cmd! !comp_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
+        "%path_fpc_old%" -vewnhq -dCOMPTEST -dBARE_FPC -Fu"%path_libs%" -FU"%path_out%\%%a" -P%%g -T%%h !comp_olevel_cmd! !comp_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
       )
       IF /I "%comp_str%"=="fpc_xlin" (
         REM cross-compiling fpc
-        "%path_fpc_xlin%" -vewnhq -dBARE_FPC -Fu"%path_libs%" -FU"%path_out%\%%a" -P%%g -T%%h !comp_olevel_cmd! !comp_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
+        "%path_fpc_xlin%" -vewnhq -dCOMPTEST -dBARE_FPC -Fu"%path_libs%" -FU"%path_out%\%%a" -P%%g -T%%h !comp_olevel_cmd! !comp_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
       ) 
 
       ECHO; | "%script_tee%" "%file_log%"
