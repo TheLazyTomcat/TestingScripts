@@ -116,6 +116,12 @@ FOR %%f IN (%file_list%) DO (
       ECHO ^[F: !file_list_index!/%file_list_count%^; C: !fpc_build_mode_index!/!fpc_build_mode_count!^] Actual Lazarus - %%m | "%script_tee%" "%file_log%"
 
       %path_lazb% %cmd_lazarus%%%m "%%~f" | "%script_tee%" "%file_log%"
+      
+      REM crossbuilding in lazarus
+      ECHO; | "%script_tee%" "%file_log%"
+      ECHO ^[F: !file_list_index!/%file_list_count%^; C: !fpc_build_mode_index!/!fpc_build_mode_count!^] Crosscompiling Lazarus - %%m | "%script_tee%" "%file_log%"
+
+      %path_lazb_xlin% %cmd_lazarus%%%m "%%~f" | "%script_tee%" "%file_log%"      
 
       SET /A fpc_build_mode_index+=1
     )
