@@ -72,17 +72,19 @@ FOR %%f IN (%file_list%) DO (
     )
     REM copy the script files
     COPY /Y "%path_this%utils\comp_modes_delphi.txt" "%%~dpfCompileTests\utils\comp_modes_delphi.txt" >NUL
+    COPY /Y "%path_this%utils\comp_modes_fpc.txt" "%%~dpfCompileTests\utils\comp_modes_fpc.txt" >NUL
     COPY /Y "%path_this%utils\comp_modes_fpc_old.txt" "%%~dpfCompileTests\utils\comp_modes_fpc_old.txt" >NUL
     COPY /Y "%path_this%utils\comp_modes_fpc_xlin.txt" "%%~dpfCompileTests\utils\comp_modes_fpc_xlin.txt" >NUL
-    COPY /Y "%path_this%utils\comp_modes_fpc.txt" "%%~dpfCompileTests\utils\comp_modes_fpc.txt" >NUL
+    COPY /Y "%path_this%utils\comp_modes_fpc_xvirt.txt" "%%~dpfCompileTests\utils\comp_modes_fpc_xvirt.txt" >NUL    
     COPY /Y "%path_this%utils\functions.bat" "%%~dpfCompileTests\utils\functions.bat" >NUL
     COPY /Y "%path_this%utils\out_split.bat" "%%~dpfCompileTests\utils\out_split.bat" >NUL
     COPY /Y "%path_this%utils\get_global_paths.bat" "%%~dpfCompileTests\utils\get_global_paths.bat" >NUL
     COPY /Y "%path_this%utils\unit_compile_test.bat" "%%~dpfCompileTests\utils\unit_compile_test.bat" >NUL
+    COPY /Y "%path_this%compile_test_delphi.bat" "%%~dpfCompileTests\compile_test_delphi.bat" >NUL
     COPY /Y "%path_this%compile_test_fpc.bat" "%%~dpfCompileTests\compile_test_fpc.bat" >NUL
     COPY /Y "%path_this%compile_test_fpc_old.bat" "%%~dpfCompileTests\compile_test_fpc_old.bat" >NUL
     COPY /Y "%path_this%compile_test_fpc_xlin.bat" "%%~dpfCompileTests\compile_test_fpc_xlin.bat" >NUL
-    COPY /Y "%path_this%compile_test_delphi.bat" "%%~dpfCompileTests\compile_test_delphi.bat" >NUL
+    COPY /Y "%path_this%compile_test_fpc_xvirt.bat" "%%~dpfCompileTests\compile_test_fpc_xvirt.bat" >NUL    
     
     SET /A file_list_index+=1
   )

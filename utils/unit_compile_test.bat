@@ -118,7 +118,11 @@ FOR %%f IN (%file_list%) DO (
       IF /I "%comp_str%"=="fpc_xlin" (
         REM cross-compiling fpc
         "%path_fpc_xlin%" -vewnhq -dCOMPTEST -dBARE_FPC -Fu"%path_libs%" -FU"%path_out%\%%a" -P%%g -T%%h !comp_olevel_cmd! !comp_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
-      ) 
+      )       
+      IF /I "%comp_str%"=="fpc_xvirt" (
+        REM VM cross-compiling fpc
+        "%path_fpc_xvirt%" -vewnhq -dCOMPTEST -dBARE_FPC -Fu"%path_libs_xvirt%" -FU"%path_out%\%%a" -P%%g -T%%h !comp_olevel_cmd! !comp_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
+      )        
 
       ECHO; | "%script_tee%" "%file_log%"
 
