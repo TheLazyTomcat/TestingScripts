@@ -1,29 +1,27 @@
 @ECHO OFF
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
-REM prepare prefix for file names (eg. log files)
-IF NOT DEFINED str_modifier (
-  SET "str_modifier=")
-
-REM setup start and base path (if required)
-IF NOT DEFINED path_start (
-  SET "path_start=%~dp0")
-IF NOT DEFINED path_base (  
-  SET "path_base=%~dp0..")
-
-REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+REM prepare modifier for file names (eg. log files)
+IF NOT DEFINED str_filemod (
+  SET "str_filemod=")
 
 REM directory path where this script resides
 SET "path_this=%~dp0"
+
+REM setup start and base path (if required)
+IF NOT DEFINED path_start (
+  SET "path_start=%path_this%")
+IF NOT DEFINED path_base (  
+  SET "path_base=%path_this%..") 
 
 REM get path for script that is splitting output
 SET "script_tee=%path_this%utils\out_split.bat"
 
 REM prepare log file name
-IF DEFINED script_reinit (
-  SET "file_log=%path_this%reinit_log%str_modifier%.txt"
+IF DEFINED mode_reinit (
+  SET "file_log=%path_this%reinit_log%str_filemod%.txt"
 ) ELSE (
-  SET "file_log=%path_this%update_log%str_modifier%.txt"
+  SET "file_log=%path_this%update_log%str_filemod%.txt"
 )
 
 REM delete log file if it exists
@@ -64,7 +62,7 @@ ECHO ...%count_procpaths% script folders found | "%script_tee%" "%file_log%"
 ECHO; | "%script_tee%" "%file_log%"
 
 REM temp folder for backups
-IF DEFINED script_reinit (
+IF DEFINED mode_reinit (
   IF NOT EXIST "%TEMP%\comp_tests_baks" (
     MKDIR "%TEMP%\comp_tests_baks"
   )
@@ -76,7 +74,7 @@ REM traverse the list and process individual entries
 SET /A index_procpaths=1
 FOR %%f IN (%list_procpaths%) DO (
 
-  IF DEFINED script_reinit (
+  IF DEFINED mode_reinit (
     ECHO ^[!index_procpaths!/%count_procpaths%^] initializing scripts in project: %%~dpf | "%script_tee%" "%file_log%"
   ) ELSE (
     ECHO ^[!index_procpaths!/%count_procpaths%^] updating scripts in project: %%~dpf | "%script_tee%" "%file_log%"
@@ -85,7 +83,7 @@ FOR %%f IN (%list_procpaths%) DO (
   REM unit compile tests...
   IF /I "%%~nxf"=="CompileTests" (     
     REM cleanup
-    IF DEFINED script_reinit (
+    IF DEFINED mode_reinit (
       REM delete and then reconstruct directories
       RD "%%~dpfCompileTests" /S /Q
       MKDIR "%%~dpfCompileTests"
@@ -113,7 +111,7 @@ FOR %%f IN (%list_procpaths%) DO (
   REM project compile tests...
   IF /I "%%~nxf"=="PrgCompileTests" ( 
     REM cleanup
-    IF DEFINED script_reinit (
+    IF DEFINED mode_reinit (
       REM backup build modes
       COPY /Y "%%~dpfPrgCompileTests\build_modes_fpc.txt" "%TEMP%\comp_tests_baks\temp.bak" >NUL
 
@@ -138,7 +136,7 @@ FOR %%f IN (%list_procpaths%) DO (
   REM auxiliary compile tests...
   IF /I "%%~nxf"=="AuxCompileTests" (
     REM cleanup
-    IF DEFINED script_reinit (
+    IF DEFINED mode_reinit (
       REM backup build modes
       COPY /Y "%%~dpfAuxCompileTests\build_modes_fpc.txt" "%TEMP%\comp_tests_baks\temp.bak" >NUL
 
@@ -163,7 +161,7 @@ FOR %%f IN (%list_procpaths%) DO (
   REM libraries compile tests...
   IF /I "%%~nxf"=="LibsCompileTests" (     
     REM cleanup
-    IF DEFINED script_reinit (
+    IF DEFINED mode_reinit (
       REM delete and then reconstruct directories
       RD "%%~dpfLibsCompileTests" /S /Q
       MKDIR "%%~dpfLibsCompileTests"
@@ -179,7 +177,7 @@ FOR %%f IN (%list_procpaths%) DO (
 REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 REM remove temp folder
-IF DEFINED script_reinit (
+IF DEFINED mode_reinit (
   IF EXIST "%TEMP%\comp_tests_baks" (
     RD "%TEMP%\comp_tests_baks" /S /Q
   )
