@@ -1,6 +1,18 @@
 @ECHO OFF
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
+REM prepare prefix for file names (eg. log files)
+IF NOT DEFINED str_modifier (
+  SET "str_modifier=")
+
+REM setup start and base path (if required)
+IF NOT DEFINED path_start (
+  SET "path_start=%~dp0")
+IF NOT DEFINED path_base (  
+  SET "path_base=%~dp0..")
+
+REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
 REM directory path where this script resides
 SET "path_this=%~dp0"
 
@@ -8,63 +20,72 @@ REM get path for script that is splitting output
 SET "script_tee=%path_this%utils\out_split.bat"
 
 REM prepare log file name
-IF DEFINED reinit_scripts (
-  SET "file_log=%path_this%%reinit_log.txt"
+IF DEFINED script_reinit (
+  SET "file_log=%path_this%reinit_log%str_modifier%.txt"
 ) ELSE (
-  SET "file_log=%path_this%%update_log.txt"
+  SET "file_log=%path_this%update_log%str_modifier%.txt"
 )
 
 REM delete log file if it exists
 IF EXIST "%file_log%" (
   DEL "%file_log%")
+  
+REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
 REM get list of compilation test folders and their count
 ECHO Enumerating scripts, please wait... | "%script_tee%" "%file_log%"
 ECHO; | "%script_tee%" "%file_log%"
-SET /A file_list_count=0
-SET file_list=
-FOR /R ".." %%f IN (.) DO (
+SET /A count_procpaths=0
+SET list_procpaths=
+FOR /R %path_base% %%f IN (.) DO (
   IF /I "%%~nxf"=="CompileTests" (
-    SET "file_list=!file_list!,"%%~f""
-    SET /A file_list_count+=1
+    SET "list_procpaths=!list_procpaths!,"%%~f""
+    SET /A count_procpaths+=1
     ECHO found ^(u^) script folder in: %%~dpf | "%script_tee%" "%file_log%"
   )
   IF /I "%%~nxf"=="PrgCompileTests" (
-    SET "file_list=!file_list!,"%%~f""
-    SET /A file_list_count+=1
+    SET "list_procpaths=!list_procpaths!,"%%~f""
+    SET /A count_procpaths+=1
     ECHO found ^(p^) script folder in: %%~dpf | "%script_tee%" "%file_log%"
   )
   IF /I "%%~nxf"=="AuxCompileTests" (
-    SET "file_list=!file_list!,"%%~f""
-    SET /A file_list_count+=1
+    SET "list_procpaths=!list_procpaths!,"%%~f""
+    SET /A count_procpaths+=1
     ECHO found ^(a^) script folder in: %%~dpf | "%script_tee%" "%file_log%"
   )
+  IF /I "%%~nxf"=="LibsCompileTests" (
+    SET "list_procpaths=!list_procpaths!,"%%~f""
+    SET /A count_procpaths+=1
+    ECHO found ^(l^) script folder in: %%~dpf | "%script_tee%" "%file_log%"
+  )  
 )
 ECHO; | "%script_tee%" "%file_log%"
-ECHO ...%file_list_count% script folders found | "%script_tee%" "%file_log%"
+ECHO ...%count_procpaths% script folders found | "%script_tee%" "%file_log%"
 ECHO; | "%script_tee%" "%file_log%"
 
 REM temp folder for backups
-IF DEFINED reinit_scripts (
+IF DEFINED script_reinit (
   IF NOT EXIST "%TEMP%\comp_tests_baks" (
     MKDIR "%TEMP%\comp_tests_baks"
   )
 )
 
+REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 REM traverse the list and process individual entries
-SET /A file_list_index=1
-FOR %%f IN (%file_list%) DO (
+SET /A index_procpaths=1
+FOR %%f IN (%list_procpaths%) DO (
 
-  IF DEFINED reinit_scripts (
-    ECHO ^[!file_list_index!/%file_list_count%^] initializing scripts in project: %%~dpf | "%script_tee%" "%file_log%"
+  IF DEFINED script_reinit (
+    ECHO ^[!index_procpaths!/%count_procpaths%^] initializing scripts in project: %%~dpf | "%script_tee%" "%file_log%"
   ) ELSE (
-    ECHO ^[!file_list_index!/%file_list_count%^] updating scripts in project: %%~dpf | "%script_tee%" "%file_log%"
-  )  
-
+    ECHO ^[!index_procpaths!/%count_procpaths%^] updating scripts in project: %%~dpf | "%script_tee%" "%file_log%"
+  ) 
+  
   REM unit compile tests...
   IF /I "%%~nxf"=="CompileTests" (     
     REM cleanup
-    IF DEFINED reinit_scripts (
+    IF DEFINED script_reinit (
       REM delete and then reconstruct directories
       RD "%%~dpfCompileTests" /S /Q
       MKDIR "%%~dpfCompileTests"
@@ -86,13 +107,13 @@ FOR %%f IN (%file_list%) DO (
     COPY /Y "%path_this%compile_test_fpc_xlin.bat" "%%~dpfCompileTests\compile_test_fpc_xlin.bat" >NUL
     COPY /Y "%path_this%compile_test_fpc_xvirt.bat" "%%~dpfCompileTests\compile_test_fpc_xvirt.bat" >NUL    
     
-    SET /A file_list_index+=1
-  )
-
+    SET /A index_procpaths+=1
+  )  
+  
   REM project compile tests...
   IF /I "%%~nxf"=="PrgCompileTests" ( 
     REM cleanup
-    IF DEFINED reinit_scripts (
+    IF DEFINED script_reinit (
       REM backup build modes
       COPY /Y "%%~dpfPrgCompileTests\build_modes_fpc.txt" "%TEMP%\comp_tests_baks\temp.bak" >NUL
 
@@ -111,13 +132,13 @@ FOR %%f IN (%file_list%) DO (
     COPY /Y "%path_this%utils\program_compile_test.bat" "%%~dpfPrgCompileTests\utils\program_compile_test.bat" >NUL
     COPY /Y "%path_this%project_compile_test.bat" "%%~dpfPrgCompileTests\project_compile_test.bat" >NUL
     
-    SET /A file_list_index+=1
+    SET /A index_procpaths+=1
   )
-
+  
   REM auxiliary compile tests...
   IF /I "%%~nxf"=="AuxCompileTests" (
     REM cleanup
-    IF DEFINED reinit_scripts (
+    IF DEFINED script_reinit (
       REM backup build modes
       COPY /Y "%%~dpfAuxCompileTests\build_modes_fpc.txt" "%TEMP%\comp_tests_baks\temp.bak" >NUL
 
@@ -136,12 +157,29 @@ FOR %%f IN (%file_list%) DO (
     COPY /Y "%path_this%utils\program_compile_test.bat" "%%~dpfAuxCompileTests\utils\program_compile_test.bat" >NUL
     COPY /Y "%path_this%auxiliary_compile_test.bat" "%%~dpfAuxCompileTests\auxiliary_compile_test.bat" >NUL
     
-    SET /A file_list_index+=1
-  )
+    SET /A index_procpaths+=1
+  )  
+  
+  REM libraries compile tests...
+  IF /I "%%~nxf"=="LibsCompileTests" (     
+    REM cleanup
+    IF DEFINED script_reinit (
+      REM delete and then reconstruct directories
+      RD "%%~dpfLibsCompileTests" /S /Q
+      MKDIR "%%~dpfLibsCompileTests"
+      MKDIR "%%~dpfLibsCompileTests\utils"
+    )
+    REM copy the script files
+    REM todo
+    
+    SET /A index_procpaths+=1
+  )    
 )
 
+REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 REM remove temp folder
-IF DEFINED reinit_scripts (
+IF DEFINED script_reinit (
   IF EXIST "%TEMP%\comp_tests_baks" (
     RD "%TEMP%\comp_tests_baks" /S /Q
   )

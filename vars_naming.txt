@@ -1,0 +1,13 @@
+path_*        directory path
+file_*        file path
+script_*      script file path
+mode_*        variable modifying behavior of this or called scripts
+str_*         string to be shown or incorporated into other strings or file names
+list_*        array of several values (usually strings or files)
+count_*       number of items in list_* variable
+index_*       index into list_* variable
+
+
+  path_this     directory where the executing script resides
+  path_start    directory of starting script
+  path_base     directory where the script should operate (eg. search for files)
