@@ -9,11 +9,11 @@ SET "path_this=%~dp0"
 
 REM setup start and base paths
 SET "path_start=%path_this%"
-SET "path_base=%path_this%..\Dev"
+SET "path_base=%path_this%.."
 
 REM initialize string variables
-SET "str_compiler=fpc_xvirt"
-SET "str_compilername=VM crosscompilling FPC"
+SET "str_compiler=fpc_xlin"
+SET "str_compilername=Crosscompilling FPC"
 
 REM run the compilation test script
 CALL "%path_this%utils\unit_compile_test.bat"

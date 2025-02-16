@@ -1,14 +1,21 @@
 @ECHO OFF
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
-REM setup base path for further scripts
-SET "path_base=%~dp0"
+REM inform called scripts that they are called
+SET /A mode_called=1
 
-REM initialize compilation variables
-SET "comp_str=fpc"
-SET "comp_text=Current FPC"
+REM directory path where this script resides
+SET "path_this=%~dp0"
+
+REM setup start and base paths
+SET "path_start=%path_this%"
+SET "path_base=%path_this%..\Dev"
+
+REM initialize string variables
+SET "str_compiler=fpc"
+SET "str_compilername=Current FPC"
 
 REM run the compilation test script
-CALL "%path_base%utils\unit_compile_test.bat"
+CALL "%path_this%utils\unit_compile_test.bat"
 
 ENDLOCAL

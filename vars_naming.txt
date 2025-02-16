@@ -1,13 +1,15 @@
-path_*        directory path
-file_*        file path
-script_*      script file path
-mode_*        variable modifying behavior of this or called scripts
-str_*         string to be shown or incorporated into other strings or file names
-list_*        array of several values (usually strings or files)
+compiler_*    path to a compiler/compiling (and beleave me, there IS a difference) executable
 count_*       number of items in list_* variable
+file_*        file path
 index_*       index into list_* variable
+list_*        array of several values (usually strings or files)
+mode_*        variable modifying behavior of this or called scripts
+path_*        directory path
 
-
-  path_this     directory where the executing script resides
-  path_start    directory of starting script
   path_base     directory where the script should operate (eg. search for files)
+  path_start    directory of starting script
+  path_this     directory where the executing script resides
+
+script_*      script file path
+str_*         string to be shown or incorporated into other strings or file names
+var_*         some general variable (for local use only)
