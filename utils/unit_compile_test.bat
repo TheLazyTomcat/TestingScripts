@@ -107,7 +107,7 @@ FOR %%f IN (%list_found_files%) DO (
       REM compilation
       IF /I "%str_compiler%"=="delphi" (
         REM delphi
-        dcc32 -Q -B -dCOMPTEST -U"%path_base%";"%path_libs%";"%path_out%\%%a" -I"%path_base%";"%path_libs%" -N"%path_out%\%%a" !var_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
+        "%compiler_dcc%" -Q -B -dCOMPTEST -U"%path_base%";"%path_libs%";"%path_out%\%%a" -I"%path_base%";"%path_libs%" -N"%path_out%\%%a" !var_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
       )
       IF /I "%str_compiler%"=="fpc" (
         REM actual FPC
@@ -120,11 +120,7 @@ FOR %%f IN (%list_found_files%) DO (
       IF /I "%str_compiler%"=="fpc_xlin" (
         REM cross-compiling fpc
         "%compiler_fpc_xlin%" -vewnhq -dCOMPTEST -dBARE_FPC -Fu"%path_libs%" -FU"%path_out%\%%a" -P%%g -T%%h !var_olevel_cmd! !var_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
-      )       
-      IF /I "%str_compiler%"=="fpc_xvirt" (
-        REM VM cross-compiling fpc
-        "%compiler_fpc_xvirt%" -vewnhq -dCOMPTEST -dBARE_FPC -Fu"%path_libs_xvirt%" -FU"%path_out%\%%a" -P%%g -T%%h !var_olevel_cmd! !var_define_cmd! "%%~f" | "%script_tee%" "%file_log%"
-      )        
+      )           
 
       ECHO; | "%script_tee%" "%file_log%"
 

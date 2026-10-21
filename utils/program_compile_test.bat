@@ -71,7 +71,7 @@ REM show legend
 CALL "%path_this%functions.bat", :show_legend | "%script_tee%" "%file_log%"
 
 REM prepare command lines for compilation
-SET "var_cmd_delphi=dcc32 -Q -B"
+SET "var_cmd_delphi="%compiler_dcc%" -Q -B"
 SET "var_cmd_lazarus_old=-B --bm="
 SET "var_cmd_lazarus=-B --no-write-project --bm="
 
